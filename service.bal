@@ -1,17 +1,25 @@
 import ballerina/http;
 
+
+public type PolicyEntry record {|
+    readonly string policyId;
+    string address;
+    string status;
+|};
+
 # A service representing a network-accessible API
 # bound to port `9090`.
 service / on new http:Listener(9090) {
 
     # A resource for generating greetings
-    # + name - the input string name
+    #
+    # + policyId - Parameter Description
     # + return - string name with hello message or error
-    resource function get greeting(string name) returns string|error {
-        // Send a response back to the caller.
-        if name is "" {
-            return error("name should not be empty!");
-        }
-        return "Hello, " + name;
+    resource function get policies/[string policyId]() returns PolicyEntry|error {
+        return {policyId: policyId, address: "Eugene Carriere, 30", status: "Processing"};
+    }
+
+    resource function post policies (@http:Payload PolicyEntry policy) returns http:BadRequest|http:Created|error {
+        return http:CREATED;
     }
 }
